@@ -3,25 +3,31 @@ library(nycflights13)  #>next, load the relevant dataset
 nycflights13::flights  #>loads "flights" data frame from dataset of all flights that departed from New York City in 2013
 filter(flights, month==1, day==1)  #>selects all flights on January 1st
 jan1 <- filter(flights, month==1, day==1)  #>saves the sub-data frame of all flights on January 1st to the variable "jan1"
-(dec25 <- filter(flights, month==12, day==25))  #>saves all flights from December 25th to the variable "dec25" AND automatically prints them
+(dec25 <- filter(flights, month==12, day==25))
+#>the previous line saves all flights from December 25th to the variable "dec25" AND automatically prints them
 
 sqrt(2) ^ 2 == 2    #>exemplifies how floating-point numbers make "==" an unreliable test for equality
 near(sqrt(2) ^ 2, 2)   #>instead of relying on "==", near(a,b) often makes more sense
 
 filter(flights, month==11 | month==12)  #>finds all flights that departed in November *OR* in December
-filter(flights, month== 11 | 12)  #>if you don't type the variable again after "or" it finds all months that equal 11 or 12, which evaluates to TRUE and (in a numeric context like this) becomes one, so it finds all flights in January
-nov_dec <- filter(flights, month %in% c(11,12))  #> "x %in% y" selects every row where x (the variable "month") is one of the values in y (c(11,12))
+filter(flights, month== 11 | 12)
+#>if you don't type the variable again after "or" it finds all months that equal 11 or 12
+#that evaluates to TRUE and (in a numeric context like this) becomes one, so it finds all flights in January
+nov_dec <- filter(flights, month %in% c(11,12)) 
+#> "x %in% y" selects every row where x (the variable "month") is one of the values in y (c(11,12))
 
-filter(flights, !(arr_delay > 120 | dep_delay > 120))  #finds all flights that were NOT delayed by more than two hours on arrival or departure
-filter(flights, arr_delay <= 120, dep_delay <= 120)  #De Morgan's law:  !(x & y) is the same as (!x | !y), and !(x | y) is the same as (!x & !y)
+filter(flights, !(arr_delay > 120 | dep_delay > 120))  #every flight that was NOT delayed by 2+ hours on arrival/departure
+#De Morgan's law:  !(x & y) is the same as (!x | !y), and !(x | y) is the same as (!x & !y)
+filter(flights, arr_delay <= 120, dep_delay <= 120)
 
 NA > 5  #NAs (missing values, aka "not availables") can make comparisons tricky
 10 == NA  #almost any operation involving an unknown value will also be unknown
-NA == NA  #if  x <- NA and a different variable  y <- NA as well, then asking if x==y is unknown; thus NA==NA is also unknown
+NA == NA  #if x <- NA and a different variable y <- NA too, then asking if x==y is unknown; thus NA==NA is also unknown
 is.na(x)  #determines if the variable  x  is missing a value
 
 arrange(flights, year)  #arrange() works similarly to filter() except that instead of selecting rows, it changes their order
-arrange(flights, year, month, day)  #each additional column name after the first will be used to break ties in the values of preceding columns
+arrange(flights, year, month, day)
+#each additional column name after the first will be used to break ties in the values of preceding columns
 arrange(flights, desc(arr_delay))  #use  desc() to rearrange by the specified column in descending order
 
 select(flights, year, month, day)  #select() allows you to focus only on the specified columns, zooming in on a subset and ignoring all other variables
