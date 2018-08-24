@@ -95,8 +95,10 @@ delay <- filter(delay, count > 20, dest != "HNL")
 #the code for that previous way of doing the problem is slightly frustrating to write
 #it's frustrating because each intermediate data frame requires a name, even though we don't care about it
 #there's another way to tackle the same problem by using the Pipe:
-delays <- flights %>% group_by(dest) %>% summarize(count = n(), dist = mean(distance, na.rm = TRUE),
-                                                   delay = mean(arr_delay, na.rm = TRUE)) %>% filter(count > 20, dest != "HNL")
+delays <- flights %>% group_by(dest
+                              ) %>% summarize(count = n(), dist = mean(distance, na.rm = TRUE),
+                                                   delay = mean(arr_delay, na.rm = TRUE)
+                                             ) %>% filter(count > 20, dest != "HNL")
 #the Pipe version is easier to read because it focuses on the transformations, not on what's being transformed
 #you can read it as a series of imperative statements: group, then summarize, then filter
 #a good way to pronounce   % > %   when reading code is "then"
