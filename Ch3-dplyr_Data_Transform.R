@@ -1,6 +1,6 @@
 library(tidyverse)  #>the first step is always to load tidyverse and any other packages that will be used
 library(nycflights13)  #>next, load the relevant dataset
-nycflights13::flights  #>loads the "flights" data frame from the dataset of all flights that departed from New York City in 2013
+nycflights13::flights  #>loads "flights" data frame from dataset of all flights that departed from New York City in 2013
 filter(flights, month==1, day==1)  #>selects all flights on January 1st
 jan1 <- filter(flights, month==1, day==1)  #>saves the sub-data frame of all flights on January 1st to the variable "jan1"
 (dec25 <- filter(flights, month==12, day==25))  #>saves all flights from December 25th to the variable "dec25" AND automatically prints them
