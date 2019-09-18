@@ -1,6 +1,16 @@
 library(tidyverse)  #>the first step is always to load tidyverse and any other packages that will be used
 library(nycflights13)  #>next, load the relevant dataset
 nycflights13::flights  #>loads "flights" data frame from dataset of all flights that departed from New York City in 2013
+
+##___________________________________________________________________________________________
+#  FIVE Key "dplyr" Functions:
+#    1.  filter()     -  pick observations by their values
+#    2.  arrange()    -  reorder the rows
+#    3.  select()     -  pick variables by their names
+#    4.  mutate()     -  create new variables with functions of existing variables
+#    5.  summarize()  -  collapse many values down to a single summary
+##___________________________________________________________________________________________
+
 filter(flights, month==1, day==1)  #>selects all flights on January 1st
 jan1 <- filter(flights, month==1, day==1)  #>saves the sub-data frame of all flights on January 1st to the variable "jan1"
 (dec25 <- filter(flights, month==12, day==25))
@@ -13,8 +23,9 @@ filter(flights, month==11 | month==12)  #>finds all flights that departed in Nov
 filter(flights, month== 11 | 12)
 #>if you don't type the variable again after "or" it finds all months that equal 11 or 12
 #that evaluates to TRUE and (in a numeric context like this) becomes one, so it finds all flights in January
+
 nov_dec <- filter(flights, month %in% c(11,12)) 
-#> "x %in% y" selects every row where x (the variable "month") is one of the values in y (c(11,12))
+#> "x %in% y" selects every row where x (the variable "month" in this case) is one of the values in y (c(11,12))
 
 filter(flights, !(arr_delay > 120 | dep_delay > 120))  #every flight that was NOT delayed by 2+ hours on arrival/departure
 #De Morgan's law:  !(x & y) is the same as (!x | !y), and !(x | y) is the same as (!x & !y)
@@ -25,10 +36,14 @@ NA > 5  #NAs (missing values, aka "not availables") can make comparisons tricky
 NA == NA  #if x <- NA and a different variable y <- NA too, then asking if x==y is unknown; thus NA==NA is also unknown
 is.na(x)  #determines if the variable  x  is missing a value
 
+##___________________________________________________________________________________________
+
 arrange(flights, year)  #arrange() works similarly to filter() except that instead of selecting rows, it changes their order
 arrange(flights, year, month, day)
 #each additional column name after the first will be used to break ties in the values of preceding columns
 arrange(flights, desc(arr_delay))  #use  desc() to rearrange by the specified column in descending order
+
+##___________________________________________________________________________________________
 
 #select() allows you to focus only on the specified columns, zooming in on a subset and ignoring all other variables
 select(flights, year, month, day)
@@ -47,6 +62,8 @@ rename(flights, tail_num = tailnum)
 rename(flights, Hour = hour)  #in this example, "hour" was the original column name, which is now changed to "Hour"
 select(flights, dest, air_time, everything())
 #the everything() helper allows you to rearrange the remaining columns to come after dest and air_time
+
+##___________________________________________________________________________________________
 
 flights_sml <- select(flights, year:day, ends_with("delay"), distance, air_time)
 mutate(flights_sml, gain = arr_delay - dep_delay, speed = distance/air_time * 60)
@@ -73,15 +90,20 @@ y <- c(1,2,2,NA,3,4)  #initiates an example list to demonstrate ranking function
 min_rank(y)  #min_rank() assigns the lowest rank to the lowest values, thus listing each value in ascending order
 min_rank(desc(y))  #include desc() around the parameter within min_rank() to list in descending order
 
+##___________________________________________________________________________________________
+
 #summarize() collapses data frame to a single row; na.rm removes missing values pre-computation
 summarize(flights, delay = mean(dep_delay, na.rm = TRUE))
 #summarize() isn't very useful unless paired with group_by()
+
+##___________________________________________________________________________________________
+
 #pairing summarize() with group_by() changes the unit of analysis from the complete dataset to individual groups
 #then, when you use the  dplyr  verbs on a grouped data frame, they will automatically be applied "by group"
 by_day <- group_by(flights, year, month, day)  #group_by() and summarize() together are called grouped summaries
 summarize(by_day, delay = mean(dep_delay, na.rm = TRUE))
 #grouped summaries are one of the most commonly used tools when working with dplyr
-
+##___________________________________________________________________________________________
 #before proceeding with grouped summaries, Ch. 3 introduces a powerful new idea: the Pipe
 #example (withOUT using the Pipe) to explore relationship between the distance and average delay for each location
 by_dest <- group_by(flights, dest)
@@ -103,8 +125,9 @@ delays <- flights %>% group_by(dest
 #you can read it as a series of imperative statements: group, then summarize, then filter
 #a good way to pronounce   % > %   when reading code is "then"
 #behind the scenes,  x %>% f(y)  turns into f(x,y)...   x %>% f(y) %>% g(z)  turns into g(f(x,y), z), and so on
+
 #using the Pipe is a key criterium for belonging to the tidyverse
-#the only tidyverse package that's incompatible with the Pipe is ggplot2, which was written before the Pipe was discovered
+#  the ONLY tidyverse package that's incompatible with the Pipe is ggplot2, which was written before the Pipe was discovered
 #don't forget to set the  na.rm = TRUE  argument, or else you'll get a lot of missing values
 #output will be missing values for each NA from the input IF you forget to set that  na.rm = TRUE  argument
 flights %>% group_by(year, month, day) %>% summarize(mean = mean(dep_delay, na.rm = TRUE))
